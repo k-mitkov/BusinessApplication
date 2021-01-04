@@ -1,6 +1,7 @@
 package javaproject.BusinessApplication.data.entities;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import javax.persistence.*;
 
 @Entity
@@ -11,6 +12,15 @@ public class Product extends BaseEntity{
     private String model;
     private int quantity;
     private BigDecimal price;
+    private String addedBy;
+
+    public Product(String type, String model, int quantity, BigDecimal price, String addedBy) {
+        this.type = type;
+        this.model = model;
+        this.quantity = quantity;
+        this.price = price;
+        this.addedBy = addedBy;
+    }
 
     public Product() {
     }
@@ -45,5 +55,26 @@ public class Product extends BaseEntity{
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public String getAddedBy() {
+        return addedBy;
+    }
+
+    public void setAddedBy(String addedBy) {
+        this.addedBy = addedBy;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return type.equals(product.type) && model.equals(product.model);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, model);
     }
 }

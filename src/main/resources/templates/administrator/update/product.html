@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:include="~{fragments/head}"></th:block>
+</head>
+<body>
+<header>
+    <th:block th:include="~{fragments/nav-bar}"></th:block>
+</header>
+<main>
+    <div class="jumbotron">
+
+        <span style="visibility: hidden">....</span>
+        <h1 class="text-black display-3 mt-5 display-3" >
+            Update product:
+        </h1>
+
+        <th:block>
+            <a class="btn bg-black glow-button mx-5 my-5"th:href="@{/administrator/update/product/quantity}">Add quantity</a>
+            <a class="btn bg-black glow-button mx-5 my-5"th:href="@{/administrator/update/product/price}">Update price</a>
+            <a class="btn bg-black glow-button mx-5 my-5"th:href="@{/administrator/update/product/priceAndQuantity }">Update price and add quantity</a>
+        </th:block>
+    </div>
+</main>
+<footer>
+    <th:block th:include="~{fragments/footer}"></th:block>
+</footer>
+</body>
+</html>

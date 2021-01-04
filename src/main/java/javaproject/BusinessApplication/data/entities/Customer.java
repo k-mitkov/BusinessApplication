@@ -10,7 +10,6 @@ public class Customer extends BaseEntity{
     private String address;
     private String phoneNumber;
     private BigDecimal moneySpend;
-    @ManyToOne
     private Merchant merchant;
 
     public Customer() {
@@ -48,6 +47,7 @@ public class Customer extends BaseEntity{
         this.moneySpend = moneySpend;
     }
 
+    @ManyToOne
     public Merchant getMerchant() {
         return merchant;
     }
