@@ -20,7 +20,7 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
                 .antMatchers("/js/**", "/css/**").permitAll()
                 .antMatchers("/","/index", "/users/login").anonymous()
                 .antMatchers("/merchant").hasRole("USER")
-                .antMatchers("/admin").hasRole("ADMIN")
+                .antMatchers("/administrator").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

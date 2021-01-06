@@ -24,7 +24,10 @@
             <a class="btn bg-black glow-button mx-5 my-5"th:href="@{/administrator/activities}">Activities</a>
         </th:block>
         <th:block th:if="${isAdministrator == false}">
-            <p class="display-4">Import the xml files first.</p>
+            <a class="btn bg-black glow-button mx-5 my-5"th:href="@{/merchant/sale}">Add sale</a>
+            <a class="btn bg-black glow-button mx-5 my-5"th:href="@{/merchant/customers}">Customers</a>
+            <a class="btn bg-black glow-button mx-5 my-5"th:href="@{/view/products}">View Products</a>
+            <a class="btn bg-black glow-button mx-5 my-5"th:href="@{/merchant/post}">Post ad</a>
         </th:block>
     </div>
 </main>

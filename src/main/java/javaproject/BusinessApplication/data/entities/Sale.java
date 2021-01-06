@@ -19,6 +19,16 @@ public class Sale extends BaseEntity{
     public Sale() {
     }
 
+    public Sale(String productTypeAndModel, String buyerName, String sellerName, int quantity, BigDecimal atPrice) {
+        this.productTypeAndModel = productTypeAndModel;
+        this.buyerName = buyerName;
+        this.sellerName = sellerName;
+        this.quantity = quantity;
+        this.atPrice = atPrice;
+        this.totalPrice=atPrice.multiply(BigDecimal.valueOf(quantity));
+        this.date=new Date();
+    }
+
     public String getProductTypeAndModel() {
         return productTypeAndModel;
     }
