@@ -84,4 +84,16 @@ public class Sale extends BaseEntity{
     public void setDate(Date date) {
         this.date = date;
     }
+
+    @Override
+    public String toString() {
+        return "Sale: " +
+                "\n     Product type and model: " + this.getProductTypeAndModel() +
+                "\n     Quantity: " + this.getQuantity() +
+                "\n     Price: " + this.getAtPrice() +
+                "\n     Customer name: " + this.getBuyerName() +
+                "\n     Merchant username: " + this.getSellerName() +
+                "\n     Total price: " + this.getTotalPrice() +
+                "\n";
+    }
 }

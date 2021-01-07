@@ -21,4 +21,14 @@ public class Administrator extends User {
     public void setEmail(String email) {
         this.email = email;
     }
+
+
+    @Override
+    public String toString() {
+        return "Administrator: " + this.getUsername() +
+                "\n     First name: " + this.getFirstName() +
+                "\n     Last name: " + this.getLastName() +
+                "\n     Email: " + this.getEmail() +
+                "\n";
+    }
 }

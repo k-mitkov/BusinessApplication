@@ -1,7 +1,11 @@
 package javaproject.BusinessApplication.web.controllers;
 
+import javaproject.BusinessApplication.service.services.AdministratorService;
 import javaproject.BusinessApplication.service.services.MerchantService;
 import javaproject.BusinessApplication.service.services.ProductService;
+import javaproject.BusinessApplication.service.services.SaleService;
+import javaproject.BusinessApplication.web.models.AdministratorRegisterModel;
+import javaproject.BusinessApplication.web.models.DateModel;
 import javaproject.BusinessApplication.web.models.MerchantRegisterModel;
 import javaproject.BusinessApplication.web.models.MerchantSearchModel;
 import javaproject.BusinessApplication.web.models.product.ProductAddModel;
@@ -21,11 +25,16 @@ public class AdministratorController extends BaseController{
 
     private final ProductService productService;
     private final MerchantService merchantService;
+    private final SaleService saleService;
+    private final AdministratorService administratorService;
 
     @Autowired
-    public AdministratorController(ProductService productService, MerchantService merchantService) {
+    public AdministratorController(ProductService productService, MerchantService merchantService,
+                                   SaleService saleService,AdministratorService administratorService) {
         this.productService = productService;
         this.merchantService = merchantService;
+        this.saleService=saleService;
+        this.administratorService=administratorService;
     }
 
     @GetMapping("/products")
@@ -118,15 +127,6 @@ public class AdministratorController extends BaseController{
                 ,merchantService.getMerchantInfo());
     }
 
-//    @PostMapping("/search/merchant")
-//    public ModelAndView viewMerchantConfirm(MerchantSearchModel merchantSearchModel) {
-//        if (!merchantService.find(merchantSearchModel)){
-//            return super.redirect("/administrator/search/merchant");
-//        }
-//        return new ModelAndView("administrator/view/merchant","merchant"
-//                ,merchantService.getMerchantInfo(merchantSearchModel));
-//    }
-
     @GetMapping("/delete/merchant")
     public ModelAndView deleteMerchant() {
         return new ModelAndView("administrator/delete/merchant");
@@ -136,5 +136,61 @@ public class AdministratorController extends BaseController{
     public ModelAndView deleteMerchantConfirm(MerchantSearchModel merchantSearchModel) {
         merchantService.delete(merchantSearchModel);
         return  super.redirect("/home");
+    }
+
+    @GetMapping("/sales")
+    public ModelAndView sales() {
+        return new ModelAndView("administrator/sales");
+    }
+
+    @GetMapping("/search/merchant")
+    public ModelAndView searchByMerchant() {
+        return new ModelAndView("administrator/search/merchant");
+    }
+
+    @PostMapping("/search/merchant")
+    public ModelAndView searchByMerchantConfirm(MerchantSearchModel merchantSearchModel) {
+        if (!merchantService.find(merchantSearchModel)){
+            return super.redirect("/administrator/search/merchant");
+        }
+        return new ModelAndView("administrator/view/sales","sales"
+                ,saleService.getSaleReport(merchantSearchModel));
+    }
+
+    @GetMapping("/search/date")
+    public ModelAndView searchByDate() {
+        return new ModelAndView("administrator/search/date");
+    }
+
+
+    @PostMapping("/search/date")
+    public ModelAndView searchByDateConfirm(DateModel dateModel) {
+        return new ModelAndView("administrator/view/sales","sales"
+                ,saleService.getSaleReport(dateModel));
+    }
+
+    @GetMapping("/admins")
+    public ModelAndView administrators() {
+        return new ModelAndView("administrator/admins");
+    }
+
+    @GetMapping("/add/administrator")
+    public ModelAndView addAdministrator() {
+        return new ModelAndView("administrator/add/administrator");
+    }
+
+    @PostMapping("/add/administrator")
+    public ModelAndView addAdministratorConfirm(AdministratorRegisterModel administratorRegisterModel) {
+        if (!administratorRegisterModel.getPassword().equals(administratorRegisterModel.getConfirmPassword())) {
+            return super.redirect("/administrator/add/administrator");
+        }
+        administratorService.addAdministrator(administratorRegisterModel);
+        return  super.redirect("/home");
+    }
+
+    @GetMapping("/view/administrators")
+    public ModelAndView viewAdministrator() {
+        return new ModelAndView("administrator/view/administrators","administrator"
+                ,administratorService.getAdministratorInfo());
     }
 }

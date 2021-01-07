@@ -1,24 +1,24 @@
 package javaproject.BusinessApplication.service.services.impl;
 
 import javaproject.BusinessApplication.data.entities.Merchant;
-import javaproject.BusinessApplication.data.entities.Role;
+import javaproject.BusinessApplication.data.repositories.RoleRepository;
 import javaproject.BusinessApplication.data.repositories.UserRepository;
 import javaproject.BusinessApplication.exeptions.EntityAlreadyExistsException;
 import javaproject.BusinessApplication.exeptions.EntityIsNotMerchantException;
 import javaproject.BusinessApplication.exeptions.EntityNotFoundException;
 import javaproject.BusinessApplication.service.services.MerchantService;
 import javaproject.BusinessApplication.service.services.UserService;
+import javaproject.BusinessApplication.util.TweetSender;
 import javaproject.BusinessApplication.web.models.MerchantRegisterModel;
 import javaproject.BusinessApplication.web.models.MerchantSearchModel;
+import javaproject.BusinessApplication.web.models.TweetModel;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,28 +28,33 @@ public class MerchantServiceImpl implements MerchantService {
     private final UserRepository userRepo;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserService userService;
+    private final RoleRepository roleRepo;
+    private final TweetSender tweetSender;
 
     @Autowired
-    public MerchantServiceImpl(ModelMapper modelMapper, UserService userService,
-                                    UserRepository userRepo, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public MerchantServiceImpl(ModelMapper modelMapper, UserService userService,RoleRepository roleRepo,
+                               UserRepository userRepo, BCryptPasswordEncoder bCryptPasswordEncoder,
+                               TweetSender tweetSender) {
         this.modelMapper = modelMapper;
         this.userService=userService;
         this.userRepo = userRepo;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.roleRepo=roleRepo;
+        this.tweetSender=tweetSender;
     }
 
     @Override
+    @Transactional
     public void addMerchant(MerchantRegisterModel merchantRegisterModel) {
         Merchant merchant=modelMapper.map(merchantRegisterModel,Merchant.class);
         if (userRepo.existsByUsername(merchant.getUsername())){
             throw new EntityAlreadyExistsException(String.format("User with username '%s' already exist"
                     ,merchant.getUsername()));
         }
-        Set<Role> roles=new HashSet<Role>();
-        roles.add(new Role("USER"));
-        merchant.setAuthorities(roles);
+        merchant.setAuthorities(new HashSet<>());
+        merchant.getAuthorities().add(roleRepo.findByAuthority("USER"));
         merchant.setPassword(bCryptPasswordEncoder.encode(merchant.getPassword()));
-        userRepo.saveAndFlush(merchant);
+        userRepo.save(merchant);
     }
 
     @Override
@@ -75,6 +80,11 @@ public class MerchantServiceImpl implements MerchantService {
                         ("User with username '%s' does not exist",merchantSearchModel.getUsername())));
         userRepo.deleteByUsername(merchant.getUsername());
         return merchant;
+    }
+
+    @Override
+    public void tweet(TweetModel tweetModel) {
+        tweetSender.tweet(tweetModel.getTweetMassage());
     }
 
     private void validItIsNotAdministrator(String username){

@@ -5,6 +5,7 @@ import javaproject.BusinessApplication.data.repositories.ProductRepository;
 import javaproject.BusinessApplication.exeptions.EntityAlreadyExistsException;
 import javaproject.BusinessApplication.exeptions.EntityNotFoundException;
 import javaproject.BusinessApplication.service.services.ProductService;
+import javaproject.BusinessApplication.service.services.UserService;
 import javaproject.BusinessApplication.web.models.product.ProductAddModel;
 import javaproject.BusinessApplication.web.models.product.ProductDeleteModel;
 import javaproject.BusinessApplication.web.models.product.ProductUpdatePriceModel;
@@ -33,7 +34,7 @@ public class ProductServiceImpl implements ProductService {
             throw new EntityAlreadyExistsException(String.format("Product with type '%s' and model '%s' already exists"
                     ,product.getType(),product.getModel()));
         }
-        product.setAddedBy(UserServiceImpl.loggedUsername);
+        product.setAddedBy(UserService.getCurrentUsername());
         productRepo.saveAndFlush(product);
     }
 

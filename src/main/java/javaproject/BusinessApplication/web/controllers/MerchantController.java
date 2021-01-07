@@ -1,13 +1,14 @@
 package javaproject.BusinessApplication.web.controllers;
 
 import javaproject.BusinessApplication.service.services.CustomerService;
+import javaproject.BusinessApplication.service.services.MerchantService;
 import javaproject.BusinessApplication.service.services.SaleService;
 import javaproject.BusinessApplication.web.models.SaleModel;
+import javaproject.BusinessApplication.web.models.TweetModel;
 import javaproject.BusinessApplication.web.models.customer.CustomerAddressModel;
 import javaproject.BusinessApplication.web.models.customer.CustomerPhoneModel;
 import javaproject.BusinessApplication.web.models.customer.CustomerRegisterModel;
 import javaproject.BusinessApplication.web.models.customer.CustomerSearchModel;
-import javaproject.BusinessApplication.web.models.product.ProductUpdatePriceModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,11 +22,14 @@ public class MerchantController extends BaseController{
 
     private final CustomerService customerService;
     private final SaleService saleService;
+    private final MerchantService merchantService;
 
     @Autowired
-    public MerchantController(CustomerService customerService, SaleService saleService) {
+    public MerchantController(CustomerService customerService, SaleService saleService,
+                              MerchantService merchantService) {
         this.customerService = customerService;
         this.saleService = saleService;
+        this.merchantService=merchantService;
     }
 
     @GetMapping("/customers")
@@ -107,6 +111,17 @@ public class MerchantController extends BaseController{
     @PostMapping("/sale")
     public ModelAndView saleConfirm(SaleModel saleModel) {
         saleService.addSale(saleModel);
+        return  super.redirect("/home");
+    }
+
+    @GetMapping("/tweet")
+    public ModelAndView tweet() {
+        return new ModelAndView("merchant/tweet");
+    }
+
+    @PostMapping("/tweet")
+    public ModelAndView tweetConfirm(TweetModel tweetModel) {
+        merchantService.tweet(tweetModel);
         return  super.redirect("/home");
     }
 }

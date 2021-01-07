@@ -28,7 +28,7 @@ public class HomeController extends BaseController {
     @GetMapping("/home")
     public ModelAndView home() {
         ModelAndView modelAndView = super.view("home");
-        modelAndView.addObject("isAdministrator",  userService.isAdministrator(UserServiceImpl.loggedUsername));
+        modelAndView.addObject("isAdministrator",  userService.isAdministrator(UserService.getCurrentUsername()));
         return modelAndView;
     }
 }

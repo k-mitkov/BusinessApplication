@@ -18,13 +18,26 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/js/**", "/css/**").permitAll()
-                .antMatchers("/","/index", "/users/login").anonymous()
-                .antMatchers("/merchant").hasRole("USER")
-                .antMatchers("/administrator").hasRole("ADMIN")
+                .antMatchers("/","/index", "/user/login").anonymous()
+                .antMatchers("/merchant/sale","/merchant/customer", "/merchant/add/customer",
+                        "/merchant/delete/customer", "/merchant/update/customer",
+                        "/merchant/update/customer/address", "/merchant/update/customer/phoneNumber",
+                        "/merchant/update/customer/addressAndPhoneNumber",
+                        "/merchant/view/customer").access("hasAuthority('USER')")
+                .antMatchers("/administrator/sales","/administrator/admins",
+                        "/administrator/products", "/administrator/merchants",
+                        "/administrator/add/merchants","/administrator/delete/merchants",
+                        "/administrator/search/merchants","/administrator/view/merchants",
+                        "/administrator/view/sales","/administrator/view/administrators",
+                        "/administrator/add/administrators","/administrator/search/date",
+                        "/administrator/add/products","/administrator/delete/products",
+                        "/administrator/update/products","/administrator/update/product/priceAndQuantity",
+                        "/administrator/update/product/price",
+                        "/administrator/update/product/quantity").access("hasAuthority('ADMIN')")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/users/login")
+                .loginPage("/user/login")
                 .usernameParameter("username")
                 .passwordParameter("password")
                 .defaultSuccessUrl("/home")
