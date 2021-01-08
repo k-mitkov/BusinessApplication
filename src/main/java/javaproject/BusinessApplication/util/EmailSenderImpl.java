@@ -14,7 +14,7 @@ public class EmailSenderImpl implements EmailSender {
 
     private static final String SMTP_SERVER = "smtp.abv.bg";
     private static final String USERNAME = "no-reply.techno_world@abv.bg";
-    private static final String PASSWORD = "????????";
+    private static final String PASSWORD = System.getenv("EMAIL_PASSWORD");
 
     private static final String DECREASING_SUBJECT = "Product with decreasing quantity";
     private static final String EXHAUSTED_SUBJECT = "Product with exhausted quantity";
@@ -48,12 +48,30 @@ public class EmailSenderImpl implements EmailSender {
             }
 
             msg.setSentDate(new Date());
-            SMTPTransport t = (SMTPTransport) session.getTransport("smtp");
-            t.connect(SMTP_SERVER, USERNAME, PASSWORD);
-            t.sendMessage(msg, msg.getAllRecipients());
-            t.close();
+            MyThread myThread=new MyThread(session,msg);
+            myThread.start();
         } catch (MessagingException ignored) {
+        }
+    }
 
+    private class MyThread extends Thread {
+        private final Session session;
+        private final Message msg;
+
+        private MyThread(Session session,Message msg){
+            this.session=session;
+            this.msg=msg;
+        }
+
+
+        public void run() {
+            try {
+                SMTPTransport t = (SMTPTransport) session.getTransport("smtp");
+                t.connect(SMTP_SERVER, USERNAME, PASSWORD);
+                t.sendMessage(msg, msg.getAllRecipients());
+                t.close();
+            } catch (MessagingException ignored) {
+            }
         }
     }
 }

@@ -11,10 +11,10 @@ public class TweetSenderImpl implements TweetSender{
     private static final String EXCEPTION_MESSAGE=
             "Something went wrong! Please check your internet connection and try again.";
 
-    private static String consumerKeyStr = "?????";
-    private static String consumerSecretStr = "??????";
-    private static String accessTokenStr = "???????";
-    private static String accessTokenSecretStr = "????????";
+    private static final String CUSTOMER_KEY = System.getenv("CUSTOMER_KEY");
+    private static final String CUSTOMER_SECRET = System.getenv("CUSTOMER_SECRET");
+    private static final String ACCESS_TOKEN = System.getenv("ACCESS_TOKEN");
+    private static final String ACCESS_TOKEN_SECRET = System.getenv("ACCESS_TOKEN_SECRET");
 
 
     @Override
@@ -22,9 +22,9 @@ public class TweetSenderImpl implements TweetSender{
         try {
             Twitter twitter = new TwitterFactory().getInstance();
 
-            twitter.setOAuthConsumer(consumerKeyStr, consumerSecretStr);
-            AccessToken accessToken = new AccessToken(accessTokenStr,
-                    accessTokenSecretStr);
+            twitter.setOAuthConsumer(CUSTOMER_KEY, CUSTOMER_SECRET);
+            AccessToken accessToken = new AccessToken(TweetSenderImpl.ACCESS_TOKEN,
+                    ACCESS_TOKEN_SECRET);
             twitter.setOAuthAccessToken(accessToken);
             twitter.updateStatus(message);
 

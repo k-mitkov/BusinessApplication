@@ -14,4 +14,6 @@ public interface ProductService {
     Product updatePrice(ProductUpdatePriceModel productUpdatePriceModel);
     Product updateQuantity(ProductUpdateQuantityModel productUpdateQuantityModel);
     Product updatePriceAndQuantity(ProductAddModel productAddModel);
+    Product getProduct(String type,String model);
+    void save(Product product);
 }

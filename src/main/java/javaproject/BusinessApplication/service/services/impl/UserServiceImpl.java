@@ -36,38 +36,32 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        return userRepo.findByUsername(s)
-                .orElseThrow(()->new EntityNotFoundException(String.format("There is no user with username:%s",s)));
+        return this.getUser(s);
     }
 
     @Override
-    public UserServiceModel getUser(String username) {
-        User user=userRepo.findByUsername(username)
-                .orElseThrow(()->new EntityNotFoundException(String.format("There is no user with username:%s",username)));
-        return modelMapper.map(user,UserServiceModel.class);
+    public User getUser(String username) {
+        return userRepo.findByUsername(username)
+                .orElseThrow(()->new EntityNotFoundException
+                        (String.format("User with username '%s' does not exist",username)));
     }
 
     @Override
     public boolean isAdministrator(String username) {
-        User user=userRepo.findByUsername(username)
-                .orElseThrow(()->new EntityNotFoundException(String.format("There is no user with username:%s",username)));
+        User user=this.getUser(username);
         return user instanceof Administrator;
     }
 
     @Override
     public void changePassword(PasswordModel passwordModel) {
-        User user=userRepo.findByUsername(UserService.getCurrentUsername())
-                .orElseThrow(()->new EntityNotFoundException(String.format("There is no user with username:%s",
-                        UserService.getCurrentUsername())));
+        User user=this.getUser(UserService.getCurrentUsername());
         user.setPassword(bCryptPasswordEncoder.encode(passwordModel.getPassword()));
         userRepo.saveAndFlush(user);
     }
 
     @Override
     public void changeEmail(EmailModel emailModel) {
-        Administrator administrator=(Administrator) userRepo.findByUsername(UserService.getCurrentUsername())
-                .orElseThrow(()->new EntityNotFoundException(String.format("There is no user with username:%s",
-                        UserService.getCurrentUsername())));
+        Administrator administrator=(Administrator) this.getUser(UserService.getCurrentUsername());
         administrator.setEmail(emailModel.getEmail());
         userRepo.saveAndFlush(administrator);
     }

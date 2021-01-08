@@ -12,4 +12,6 @@ public interface MerchantService {
     String getMerchantInfo();
     Merchant delete(MerchantSearchModel merchantSearchModel);
     void tweet(TweetModel tweetModel);
+    Merchant getMerchant(String username);
+    void save(Merchant merchant);
 }

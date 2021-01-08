@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.stream.Collectors;
+
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -35,60 +37,57 @@ public class ProductServiceImpl implements ProductService {
                     ,product.getType(),product.getModel()));
         }
         product.setAddedBy(UserService.getCurrentUsername());
-        productRepo.saveAndFlush(product);
+        this.save(product);
     }
 
     @Override
     public String getAllProducts() {
-        StringBuilder sb = new StringBuilder();
-        productRepo.findAll().forEach(prod ->
-                sb.append("Product: ").append(prod.getType())
-                        .append("\n     Model: ").append(prod.getModel())
-                        .append("\n     Quantity: ").append(prod.getQuantity())
-                        .append("\n     Price: ").append(prod.getPrice())
-                        .append("\n")
-        );
-        return sb.toString();
+        return productRepo.findAll().stream().map(Product::toString).collect(Collectors.joining());
     }
 
     @Override
     @Transactional
     public Product deleteProduct(ProductDeleteModel productDeleteModel) {
-        Product product=productRepo.findByTypeAndModel(productDeleteModel.getType(),productDeleteModel.getModel())
-                .orElseThrow(()->new EntityNotFoundException(String.format("Not found product with type '%s' and model '%s'"
-                ,productDeleteModel.getType(),productDeleteModel.getModel())));
+        Product product=this.getProduct(productDeleteModel.getType(),productDeleteModel.getModel());
         productRepo.deleteByTypeAndModel(productDeleteModel.getType(),productDeleteModel.getModel());
         return product;
     }
 
     @Override
     public Product updatePrice(ProductUpdatePriceModel productUpdatePriceModel){
-        Product product=productRepo.findByTypeAndModel(productUpdatePriceModel.getType(),productUpdatePriceModel.getModel())
-                .orElseThrow(()->new EntityNotFoundException(String.format("Not found product with type '%s' and model '%s'"
-                        ,productUpdatePriceModel.getType(),productUpdatePriceModel.getModel())));
+        Product product=this.getProduct(productUpdatePriceModel.getType(),productUpdatePriceModel.getModel());
         product.setPrice(productUpdatePriceModel.getPrice());
-        productRepo.saveAndFlush(product);
+        this.save(product);
         return product;
     }
 
     @Override
     public Product updateQuantity(ProductUpdateQuantityModel productUpdateQuantityModel){
-        Product product=productRepo.findByTypeAndModel(productUpdateQuantityModel.getType(),productUpdateQuantityModel.getModel())
-                .orElseThrow(()->new EntityNotFoundException(String.format("Not found product with type '%s' and model '%s'"
-                        ,productUpdateQuantityModel.getType(),productUpdateQuantityModel.getModel())));
+        Product product=this.getProduct(productUpdateQuantityModel.getType(),productUpdateQuantityModel.getModel());
         product.setQuantity(product.getQuantity()+productUpdateQuantityModel.getQuantity());
-        productRepo.saveAndFlush(product);
+        this.save(product);
         return product;
     }
 
     @Override
     public Product updatePriceAndQuantity(ProductAddModel productAddModel) {
-        Product product=productRepo.findByTypeAndModel(productAddModel.getType(),productAddModel.getModel())
-                .orElseThrow(()->new EntityNotFoundException(String.format("Not found product with type '%s' and model '%s'"
-                        ,productAddModel.getType(),productAddModel.getModel())));
+        Product product=this.getProduct(productAddModel.getType(),productAddModel.getModel());
         product.setPrice(productAddModel.getPrice());
         product.setQuantity(product.getQuantity()+productAddModel.getQuantity());
-        productRepo.saveAndFlush(product);
+        this.save(product);
         return product;
+    }
+
+    @Override
+    public Product getProduct(String type,String model){
+        return productRepo.findByTypeAndModel(type,model)
+                .orElseThrow(()->new EntityNotFoundException
+                        (String.format("Not found product with type '%s' and model '%s'",type,model)));
+    }
+
+    @Override
+    @Transactional
+    public void save(Product product) {
+        productRepo.save(product);
     }
 }

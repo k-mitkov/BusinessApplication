@@ -14,4 +14,6 @@ public interface CustomerService {
     Customer updatePhoneNumber(CustomerPhoneModel customerPhoneModel);
     Customer updateAddressAndPhoneNumber(CustomerRegisterModel customerRegisterModel);
     Customer deleteCustomer(CustomerSearchModel customerSearchModel);
+    Customer getCustomer(String name);
+    void save(Customer customer);
 }

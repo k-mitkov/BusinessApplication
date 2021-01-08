@@ -77,4 +77,13 @@ public class Product extends BaseEntity{
     public int hashCode() {
         return Objects.hash(type, model);
     }
+
+    @Override
+    public String toString(){
+        return "Product: " + this.getType() +
+                "\n     Model: " + this.getModel() +
+                "\n     Quantity: " + this.getQuantity() +
+                "\n     Price: " + this.getPrice() +
+                "\n";
+    }
 }

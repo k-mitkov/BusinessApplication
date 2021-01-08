@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class AppInitializer implements CommandLineRunner {
 
+    private static final String ADMIN_Password = System.getenv("ADMIN_PASSWORD");
+
     private final AdministratorService administratorService;
     private final UserRepository userRepository;
     private final RoleService roleService;

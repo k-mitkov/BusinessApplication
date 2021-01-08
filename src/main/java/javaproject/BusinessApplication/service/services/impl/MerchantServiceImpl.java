@@ -74,12 +74,20 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     @Transactional
     public Merchant delete(MerchantSearchModel merchantSearchModel) {
-        validItIsNotAdministrator(merchantSearchModel.getUsername());
-        Merchant merchant=(Merchant) userRepo.findByUsername(merchantSearchModel.getUsername())
-                .orElseThrow(()->new EntityNotFoundException(String.format
-                        ("User with username '%s' does not exist",merchantSearchModel.getUsername())));
+        Merchant merchant=this.getMerchant(merchantSearchModel.getUsername());
         userRepo.deleteByUsername(merchant.getUsername());
         return merchant;
+    }
+
+    @Override
+    public Merchant getMerchant(String username){
+        validItIsNotAdministrator(username);
+        return (Merchant) userService.getUser(username);
+    }
+
+    @Override
+    public void save(Merchant merchant) {
+        userRepo.save(merchant);
     }
 
     @Override

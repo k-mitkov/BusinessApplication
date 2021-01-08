@@ -2,6 +2,7 @@ package javaproject.BusinessApplication.data.entities;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -14,7 +15,7 @@ public class Sale extends BaseEntity{
     private int quantity;
     private BigDecimal atPrice;
     private BigDecimal totalPrice;
-    private Date date;
+    private LocalDate date;
 
     public Sale() {
     }
@@ -26,7 +27,7 @@ public class Sale extends BaseEntity{
         this.quantity = quantity;
         this.atPrice = atPrice;
         this.totalPrice=atPrice.multiply(BigDecimal.valueOf(quantity));
-        this.date=new Date();
+        this.date=LocalDate.now();
     }
 
     public String getProductTypeAndModel() {
@@ -77,17 +78,17 @@ public class Sale extends BaseEntity{
         this.totalPrice = totalPrice;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
     @Override
     public String toString() {
-        return "Sale: " +
+        return "Sale: " + this.getDate() +
                 "\n     Product type and model: " + this.getProductTypeAndModel() +
                 "\n     Quantity: " + this.getQuantity() +
                 "\n     Price: " + this.getAtPrice() +
