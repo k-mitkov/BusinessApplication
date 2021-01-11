@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -68,7 +70,8 @@ public class MerchantServiceImpl implements MerchantService {
                 .filter(u->u instanceof Merchant)
                 .map(u->(Merchant) u)
                 .collect(Collectors.toList());
-        return merchants.stream().map(Merchant::toString).collect(Collectors.joining());
+        return merchants.stream().sorted(Comparator.comparing(Merchant::getSalesValue).reversed())
+                .map(Merchant::toString).collect(Collectors.joining());
     }
 
     @Override

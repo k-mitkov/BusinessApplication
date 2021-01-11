@@ -24,12 +24,29 @@ public class ErrorHandlerController {
     public ModelAndView getCustomTwitterException(CustomTwitterException ex) {
         return getExceptionMessage(ex);
     }
+
     @ExceptionHandler
     public ModelAndView getEntityIsNotMerchantException(EntityIsNotMerchantException ex) {
         return getExceptionMessage(ex);
     }
+
     @ExceptionHandler
     public ModelAndView getNotEnoughProductsExceptions(NotEnoughProductsExceptions ex) {
+        return getExceptionMessage(ex);
+    }
+
+    @ExceptionHandler
+    public ModelAndView getDateException(DateException ex) {
+        return getExceptionMessage(ex);
+    }
+
+    @ExceptionHandler
+    public ModelAndView getNegativePriceException(NegativePriceException ex) {
+        return getExceptionMessage(ex);
+    }
+
+    @ExceptionHandler
+    public ModelAndView getNegativeQuantityException(NegativeQuantityException ex) {
         return getExceptionMessage(ex);
     }
 

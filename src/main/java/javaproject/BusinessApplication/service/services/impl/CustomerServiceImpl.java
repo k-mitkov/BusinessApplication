@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,7 +43,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public String getAllCustomers() {
-        return customerRepository.findAll().stream().map(Customer::toString).collect(Collectors.joining("\n"));
+        return customerRepository.findAll().stream().sorted(Comparator.comparing(Customer::getMoneySpend).reversed())
+                .map(Customer::toString).collect(Collectors.joining("\n"));
     }
 
     @Override

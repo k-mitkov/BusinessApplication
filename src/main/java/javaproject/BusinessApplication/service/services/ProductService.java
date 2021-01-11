@@ -16,4 +16,5 @@ public interface ProductService {
     Product updatePriceAndQuantity(ProductAddModel productAddModel);
     Product getProduct(String type,String model);
     void save(Product product);
+    void validateQuantity(int quantity);
 }

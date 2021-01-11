@@ -5,6 +5,7 @@ import javaproject.BusinessApplication.data.entities.Merchant;
 import javaproject.BusinessApplication.data.entities.Product;
 import javaproject.BusinessApplication.data.entities.Sale;
 import javaproject.BusinessApplication.data.repositories.SaleRepository;
+import javaproject.BusinessApplication.exeptions.DateException;
 import javaproject.BusinessApplication.exeptions.NotEnoughProductsExceptions;
 import javaproject.BusinessApplication.service.services.*;
 import javaproject.BusinessApplication.web.models.DateModel;
@@ -45,6 +46,7 @@ public class SaleServiceImpl implements SaleService {
         Product product=productService.getProduct(saleModel.getProductType(),saleModel.getProductModel());
         Customer customer=customerService.getCustomer(saleModel.getCustomerName());
         Merchant merchant= merchantService.getMerchant(UserService.getCurrentUsername());
+        productService.validateQuantity(saleModel.getQuantity());
         if (product.getQuantity()<saleModel.getQuantity()){
             throw  new NotEnoughProductsExceptions(
                     String.format("You cannot sell %d products because there are only %d quantities of this product."
@@ -68,8 +70,8 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public String getSaleReport(MerchantSearchModel merchantSearchModel) {
         List<Sale> sales=saleRepo.findBySellerName(merchantSearchModel.getUsername());
-        sales.sort(Comparator.comparing(Sale::getDate));
-        return sales.stream().map(Sale::toString).collect(Collectors.joining("\n"));
+        sales.sort(Comparator.comparing(Sale::getDate).reversed());
+        return sales.stream().map(Sale::toString).collect(Collectors.joining());
     }
 
     @Override
@@ -80,8 +82,15 @@ public class SaleServiceImpl implements SaleService {
         input=Arrays.stream(dateModel.getDateTo().split("-"))
                 .map(Integer::parseInt).collect(Collectors.toList());
         LocalDate dateTo=LocalDate.of(input.get(0),input.get(1),input.get(2));
+        validateDates(dateFrom,dateTo);
         List<Sale> sales=saleRepo.findByDateBetween(dateFrom,dateTo);
-        sales.sort(Comparator.comparing(Sale::getDate));
+        sales.sort(Comparator.comparing(Sale::getDate).reversed());
         return sales.stream().map(Sale::toString).collect(Collectors.joining());
+    }
+
+    private void validateDates(LocalDate dateFrom,LocalDate dateTo){
+        if (dateFrom.compareTo(dateTo)>0){
+            throw new DateException("Date from must be before date to!");
+        }
     }
 }
